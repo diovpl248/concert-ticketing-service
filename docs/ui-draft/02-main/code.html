@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Upcoming Concerts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #111111;
+            --secondary: #6B7280;
+            --accent: #FF3B30;
+            --surface: #FFFFFF;
+            --background: #FFFFFF;
+            --card-bg: #F9FAFB;
+            --card-radius: 16px;
+            --tag-blue: #E0F2FE;
+            --tag-blue-text: #0369A1;
+            --tag-sage: #DCFCE7;
+            --tag-sage-text: #15803D;
+            --tag-peach: #FFEDD5;
+            --tag-peach-text: #C2410C;
+            --tag-purple: #F3E8FF;
+            --tag-purple-text: #7E22CE;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--primary);
+            -webkit-font-smoothing: antialiased;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .text-balance {
+            text-wrap: balance;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-24">
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50">
+<div class="px-5 pt-12 pb-4">
+<div class="flex justify-between items-center mb-5 h-10">
+<div class="flex items-center gap-1">
+<button class="p-2 -ml-2 text-gray-900 hover:text-gray-600 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 28px; font-weight: 300;">chevron_left</span>
+</button>
+<h1 class="text-lg font-semibold text-gray-900 ml-1">Events</h1>
+</div>
+<div class="relative">
+<button class="p-2 -mr-2 text-gray-900 hover:text-gray-600 transition-colors relative">
+<span class="material-symbols-outlined" style="font-size: 24px; font-weight: 300;">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+</button>
+</div>
+</div>
+<div class="relative mb-5 group">
+<span class="absolute left-4 top-3.5 material-symbols-outlined text-gray-400 group-focus-within:text-black transition-colors" style="font-size: 20px; font-weight: 300;">search</span>
+<input class="w-full bg-gray-50 border border-gray-100 rounded-[14px] py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-black focus:border-black transition-all shadow-sm" placeholder="Search artists, venues..." type="text"/>
+</div>
+<div class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-1 -mx-5 px-5">
+<button class="flex-none px-4 py-2 rounded-[12px] bg-black text-white font-medium text-[13px] shadow-sm">All</button>
+<button class="flex-none px-4 py-2 rounded-[12px] bg-gray-50 text-gray-600 font-medium text-[13px] border border-gray-100 hover:bg-gray-100 whitespace-nowrap">K-Pop</button>
+<button class="flex-none px-4 py-2 rounded-[12px] bg-gray-50 text-gray-600 font-medium text-[13px] border border-gray-100 hover:bg-gray-100 whitespace-nowrap">Musical</button>
+<button class="flex-none px-4 py-2 rounded-[12px] bg-gray-50 text-gray-600 font-medium text-[13px] border border-gray-100 hover:bg-gray-100 whitespace-nowrap">Classic</button>
+<button class="flex-none px-4 py-2 rounded-[12px] bg-gray-50 text-gray-600 font-medium text-[13px] border border-gray-100 hover:bg-gray-100 whitespace-nowrap">Indie</button>
+<button class="flex-none px-4 py-2 rounded-[12px] bg-gray-50 text-gray-600 font-medium text-[13px] border border-gray-100 hover:bg-gray-100 whitespace-nowrap">Exhibition</button>
+</div>
+</div>
+</header>
+<main class="px-5 pt-4 space-y-8">
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold text-gray-900">Trending Now</h2>
+<a class="text-xs font-medium text-gray-400 hover:text-black transition-colors" href="#">See All</a>
+</div>
+<div class="flex overflow-x-auto hide-scrollbar gap-4 -mx-5 px-5 pb-4 snap-x snap-mandatory">
+<div class="snap-center shrink-0 w-[80vw] relative rounded-[16px] overflow-hidden aspect-[16/10] shadow-sm border border-gray-100 group">
+<img alt="Concert" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARLcuz0_h6RBU7jLcT6uEr0YBNSXEYqKf_mkrpUbylve4BPDdKRzVI5aLrplrCcSzhmZlozq5C4lN075JF6tFMice1ZxRXUdAmAQrKTobjIZjQ8d7liuKdlKcw7X7LYD--8slyANZ1-N9vFmFdO7Mww8DssFVtnC64-OAh1JGWs-FQXOfaiSwN4oqdYp4VuvZ6DAXuIPaPkG36rIbXxfnYtZL-QQj_wHYCZKW4N06ojkW9RVGJflELB14VwMhAwr9nShhkqEZd-oky"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-5 w-full">
+<span class="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[10px] font-semibold text-white mb-2 border border-white/10 uppercase tracking-wide">K-Pop</span>
+<h3 class="text-xl font-bold text-white mb-1 leading-tight text-balance">Neon Nights World Tour</h3>
+<p class="text-white/80 text-xs mb-3 flex items-center gap-1.5 font-medium">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Oct 24 • Seoul Olympic Stadium
+                    </p>
+<button class="w-full bg-white text-black font-semibold py-2.5 rounded-[12px] text-sm hover:bg-gray-50 transition-colors shadow-sm active:scale-[0.98]">Book Now</button>
+</div>
+</div>
+<div class="snap-center shrink-0 w-[80vw] relative rounded-[16px] overflow-hidden aspect-[16/10] shadow-sm border border-gray-100 group">
+<img alt="Concert" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbpc__BxXboFlKlQ3fJpuPMURER_cAOKw4fX2i6dTYq9GK21tbAYlXJp27qf_clhTfbSiK5OA6mdiDuBKxgz0w_o1cUrNM9OOcbw4hcYjIiSLD9OlIEp2Y4dZsKyZaUbwUZyJmXOVrzfZHE1-vxdwMnPSR1L2zvP6UtgbFckhVsIgqo-YQu-VpF39FbG-ZQdeHDgcw9_XrhgkgNI9hYjsxnXau127bkMlrZdh6PSBMc4wIwU8tYhEJoRVD7GOYQiKWBgnTXLmYQZlG"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-5 w-full">
+<span class="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[10px] font-semibold text-white mb-2 border border-white/10 uppercase tracking-wide">Musical</span>
+<h3 class="text-xl font-bold text-white mb-1 leading-tight text-balance">Phantom of the Opera</h3>
+<p class="text-white/80 text-xs mb-3 flex items-center gap-1.5 font-medium">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Nov 12 • Charlotte Theater
+                    </p>
+<button class="w-full bg-white text-black font-semibold py-2.5 rounded-[12px] text-sm hover:bg-gray-50 transition-colors shadow-sm active:scale-[0.98]">Book Now</button>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-lg font-bold text-gray-900 mb-4">Upcoming Concerts</h2>
+<div class="grid grid-cols-1 gap-4 pb-10">
+<article class="bg-[var(--card-bg)] rounded-[16px] p-4 flex gap-4 border border-gray-100">
+<div class="w-28 h-32 shrink-0 relative rounded-[12px] overflow-hidden bg-gray-200">
+<img alt="Poster" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ZozVyuaBhPn2fcvO-kCqZFdOF57f3LpJ4Z7hfWDrp2xQ-I6R5hTyIPMlETZrFH-RICpnKj9ZdOHvYez9A_Xg4jCnNUGUzwEFEfXubXRFh2QXMxIO9iU-nm_oMODQ_-Gh-FKGsD-JYYmdjQP1nv2xpdHqh5oBlxjfQhD4JmcOpf2rllp_e2UV59CLQNiVeIS47oD_ZlRk-FePMM5fReR0kvAN4Wq7q9dMOU-YXDby6vZiMbZC4BZnoBYc87cbvjMp1H3ia3V6ZVTn"/>
+<div class="absolute top-2 left-2 bg-black/70 backdrop-blur-[2px] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-[6px]">D-5</div>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start mb-1.5">
+<span class="px-2.5 py-1 rounded-[8px] text-[10px] font-semibold bg-[var(--tag-blue)] text-[var(--tag-blue-text)]">Classic</span>
+<button class="text-gray-300 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-[20px] font-light">favorite</span>
+</button>
+</div>
+<h3 class="font-bold text-[15px] text-gray-900 leading-snug line-clamp-2">Symphony No. 9: The Grand Finale</h3>
+<div class="mt-2 space-y-1">
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-gray-400">event</span> Dec 05, 2023
+                            </p>
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5 truncate">
+<span class="material-symbols-outlined text-[14px] text-gray-400">location_on</span> Seoul Arts Center
+                            </p>
+</div>
+</div>
+<button class="mt-3 w-full bg-black text-white font-medium py-2.5 rounded-[12px] text-[13px] active:bg-gray-800 transition-colors shadow-sm">Book Now</button>
+</div>
+</article>
+<article class="bg-[var(--card-bg)] rounded-[16px] p-4 flex gap-4 border border-gray-100">
+<div class="w-28 h-32 shrink-0 relative rounded-[12px] overflow-hidden bg-gray-200">
+<img alt="Poster" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPjJP3OzRJzqHN56Q-KtuqrqrP3pcZzApOf-9-Owd4WArpEYB01s5jt01FaNeyLuKtFRU1y6SiDNwSQb2_sLe1T6bnCyH8wIXFMVvmJGpbRH6j4_2L8W2JQWPlcznlJpmncl7VhRYIaWFopSiU4Mjh6HM4ThxIPWh8puJJL9LZ3Emrg700X2h6Haveo4dCShsKE9geCwiYcOrcDG9wSz8O5U0Z5ZqnjLB1GjBsW_wWmfOtWi_rQtflVRUNflULNVO8k9SZrCjf3IMT"/>
+<div class="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-[6px]">HOT</div>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start mb-1.5">
+<span class="px-2.5 py-1 rounded-[8px] text-[10px] font-semibold bg-[var(--tag-peach)] text-[var(--tag-peach-text)]">K-Pop</span>
+<button class="text-gray-300 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-[20px] font-light">favorite</span>
+</button>
+</div>
+<h3 class="font-bold text-[15px] text-gray-900 leading-snug line-clamp-2">Blackpink World Tour [BORN PINK]</h3>
+<div class="mt-2 space-y-1">
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-gray-400">event</span> Jan 15, 2024
+                            </p>
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5 truncate">
+<span class="material-symbols-outlined text-[14px] text-gray-400">location_on</span> KSPO Dome
+                            </p>
+</div>
+</div>
+<button class="mt-3 w-full bg-black text-white font-medium py-2.5 rounded-[12px] text-[13px] active:bg-gray-800 transition-colors shadow-sm">Book Now</button>
+</div>
+</article>
+<article class="bg-[var(--card-bg)] rounded-[16px] p-4 flex gap-4 border border-gray-100 opacity-70">
+<div class="w-28 h-32 shrink-0 relative rounded-[12px] overflow-hidden bg-gray-200 grayscale">
+<img alt="Poster" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhfUAlpjzCXIXABOYnBt6tPLQ40As9ak7_tnkhDElRlipTHk3MX1E-fgLZVGEALArfdtRac_q-h0vbr2q7D2zFfmohQa7Td9C7LW1prjA4DSWkxe63BvcL-tt0IXXYMPMf5_jBvLbeMvhLAaaKpcrMKIVKfO9_tD-Y3xMCDtHC6pShXIMQ0tsFOJSUyYNiwVetpo_ck4l_q-Ewi6l_s_75wylKElhUJIMpvNebKemiUsw5Clq16oo3nah_cGU2li50utY3xy433Vzm"/>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start mb-1.5">
+<span class="px-2.5 py-1 rounded-[8px] text-[10px] font-semibold bg-[var(--tag-purple)] text-[var(--tag-purple-text)]">Indie</span>
+<button class="text-gray-300 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-[20px] font-light">favorite</span>
+</button>
+</div>
+<h3 class="font-bold text-[15px] text-gray-900 leading-snug line-clamp-2">Late Night Jazz Session Vol.4</h3>
+<div class="mt-2 space-y-1">
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-gray-400">event</span> Feb 02, 2024
+                            </p>
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5 truncate">
+<span class="material-symbols-outlined text-[14px] text-gray-400">location_on</span> Blue Note Seoul
+                            </p>
+</div>
+</div>
+<button class="mt-3 w-full bg-gray-200 text-gray-400 font-medium py-2.5 rounded-[12px] text-[13px] cursor-not-allowed" disabled="">Sold Out</button>
+</div>
+</article>
+<article class="bg-[var(--card-bg)] rounded-[16px] p-4 flex gap-4 border border-gray-100">
+<div class="w-28 h-32 shrink-0 relative rounded-[12px] overflow-hidden bg-gray-200">
+<img alt="Poster" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjReS4HtDZXvymQcDgGBbg_bha-UWx3joDJ5BkjIG-5B7E6nkGm73K61nuHZmfVJv-lA1Qer4--lhjHAtQhIPgtj1_BixrhVMXZyLpt_96CoDm4NERJjMvdmSlz26aRfWaQzCFbQYNW5wMvf9N-1tMxzFwqLQOFnonXxzunvi6fjbCvlvG6buGaI9qJsEFRcKllHFgeSUZc8ZBOoFUJjQyTrJ9TukmxnU_Zs4Sz5GbEb1DiDP85o8kfZ0UUQdRy4_Sdt9QNNmTNvde"/>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start mb-1.5">
+<span class="px-2.5 py-1 rounded-[8px] text-[10px] font-semibold bg-[var(--tag-sage)] text-[var(--tag-sage-text)]">Exhibition</span>
+<button class="text-gray-300 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-[20px] font-light">favorite</span>
+</button>
+</div>
+<h3 class="font-bold text-[15px] text-gray-900 leading-snug line-clamp-2">Modern Art: Beyond the Frame</h3>
+<div class="mt-2 space-y-1">
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-gray-400">event</span> Mar 10, 2024
+                            </p>
+<p class="text-xs text-gray-500 font-medium flex items-center gap-1.5 truncate">
+<span class="material-symbols-outlined text-[14px] text-gray-400">location_on</span> National Museum
+                            </p>
+</div>
+</div>
+<button class="mt-3 w-full bg-black text-white font-medium py-2.5 rounded-[12px] text-[13px] active:bg-gray-800 transition-colors shadow-sm">Book Now</button>
+</div>
+</article>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-100 px-6 py-3 flex justify-between items-center z-40 pb-safe">
+<a class="flex flex-col items-center gap-1 text-black" href="#">
+<span class="material-symbols-outlined fill-1" style="font-variation-settings: 'FILL' 1, 'wght' 300;">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-black transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-weight: 300;">confirmation_number</span>
+<span class="text-[10px] font-medium">Tickets</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-black transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-weight: 300;">favorite</span>
+<span class="text-[10px] font-medium">Saved</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-black transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-weight: 300;">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+<div class="h-6 w-full bg-white fixed bottom-0 left-0 right-0 z-50"></div>
+</body></html>
