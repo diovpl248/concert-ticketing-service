@@ -98,3 +98,6 @@ yarn-error.log*
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+### Docker ###
+data/
