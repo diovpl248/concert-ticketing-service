@@ -32,25 +32,26 @@
       </div>
 
       <div class="space-y-3 w-full">
-        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm items-start">
-          <component :is="Info" class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
-          <div class="text-[13px] text-gray-600 leading-relaxed">
-            <p class="font-semibold text-gray-900 mb-0.5 text-sm">새로고침 금지</p>
+        <div class="flex gap-4 p-5 bg-indigo-50/50 rounded-2xl border border-gray-100 shadow-sm items-start">
+          <component :is="Info" class="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+          <div class="text-[13px] text-indigo-900 leading-relaxed">
+            <p class="font-semibold text-indigo-800 mb-0.5 text-sm">새로고침 금지</p>
             페이지를 새로고침하거나 브라우저를 닫으면 대기 순서가 초기화될 수 있습니다.
           </div>
         </div>
+		<p class="text-center text-[11px] font-mono text-gray-300 mt-4 tracking-wide uppercase">Queue ID: Q-8829-XJ29</p>
       </div>
     </main>
 
-    <div class="sticky bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-100 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+    <!-- <div class="sticky bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-100 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
       <div class="max-w-md mx-auto">
         <button class="w-full bg-gray-50 text-gray-400 font-semibold py-4 rounded-xl text-[15px] cursor-not-allowed flex items-center justify-center gap-2.5 transition-all" disabled>
           <component :is="Lock" class="w-[18px] h-[18px]" />
           좌석 선택 페이지 진입 중...
         </button>
-        <p class="text-center text-[11px] font-mono text-gray-300 mt-4 tracking-wide uppercase">Queue ID: Q-8829-XJ29</p>
+        
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

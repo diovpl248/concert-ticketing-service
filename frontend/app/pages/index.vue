@@ -2,16 +2,10 @@
   <div>
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50">
-      <div class="px-5 pt-12 pb-4">
+      <div class="px-5 pt-5 pb-4">
         <div class="flex justify-between items-center mb-5 h-10">
           <div class="flex items-center gap-1">
             <h1 class="text-xl font-bold text-gray-900 ml-1">공연 예매</h1>
-          </div>
-          <div class="relative">
-            <button class="p-2 -mr-2 text-gray-900 hover:text-gray-600 transition-colors relative">
-              <component :is="Bell" class="w-6 h-6 stroke-1" />
-              <span class="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
-            </button>
           </div>
         </div>
         

@@ -29,7 +29,15 @@ graph TD
 
 ## 2. 프로세스 흐름도 (Sequence Diagrams)
 
-### 2.1. 대기열 진입 및 토큰 발급 (Queue Flow)
+### 2.0. 사용자 플로우 (User Flow)
+1.  **공연 목록/상세 (Concert List/Detail)**: 공연 목록 확인 후 특정 공연 상세 페이지로 이동.
+2.  **대기열 진입 (Enter Queue)**: 상세 페이지에서 "예매하기" 버튼 클릭 시 대기열 토큰 발급 및 진입.
+3.  **대기 (Waiting)**: 대기열 페이지에서 자신의 순서 대기. (순번 도래 시 좌석 선택 페이지로 이동)
+4.  **좌석 선택 (Seat Selection)**: 좌석 선택 페이지에서 좌석 지정 후 "결제하기" 버튼 클릭 (임시 배정).
+5.  **결제 (Payment)**: 결제 페이지에서 결제 진행 및 완료 (최종 확정).
+
+### 2.1. 대기열 진입 및 대기 (Queue Flow)
+> **Step 2 ~ 3**: 공연 상세 -> 대기열 -> 좌석 선택 진입 전
 
 ```mermaid
 sequenceDiagram
@@ -37,30 +45,42 @@ sequenceDiagram
     participant Q as Queue API Server
     participant R as Redis
 
-    U->>Q: 접속 요청 (GET /queue/status)
-    Q->>R: 대기열 상태 확인 (ZCard)
+    Note over U: 공연 상세 페이지 ("예매하기" 클릭)
+    U->>Q: 대기열 진입 요청 (POST /queue/tokens)
+    Q->>R: 대기열 상태 확인 (Active User Count)
     
     alt 대기열 없음 (여유)
-        R-->>Q: Count < Threshold
-        Q-->>U: "바로 입장 가능" (Token 발급)
-    else 대기열 있음 (혼잡)
-        Q->>R: 대기열 진입 (ZAdd)
-        R-->>Q: OK
-        Q-->>U: "대기 중" (Rank N)
-        
-        loop Polling (매 3s)
-            U->>Q: 내 순서 확인
-            Q->>R: 순번 조회 (ZRank)
-            R-->>Q: Rank
-            Q-->>U: 남은 인원 & 예상 시간
+        rect rgba(0, 255, 0, 0.1)
+            Q->>R: 활동열로 바로 진입 (SAdd Active)
+            R-->>Q: OK
+            Q-->>U: 바로 입장 (Token: ACTIVE)
         end
-        
-        Note over U, Q: 순번 도래 시
-        Q-->>U: Active Token 발급
+    else 대기열 있음 (혼잡)
+        rect rgba(255, 0, 0, 0.1)
+            Q->>R: 대기열 등록 (ZAdd Wait)
+            R-->>Q: OK
+            Q-->>U: 대기 토큰 발급 (Status: WAITING)
+
+            loop Polling (매 3s)
+                U->>Q: 내 순서 확인 (GET /queue/status)
+                Q->>R: 순번 조회 (ZRank)
+                R-->>Q: Rank / Active 여부
+                
+                alt 아직 대기중
+                    Q-->>U: "대기 중" (남은 인원, 예상 시간)
+                else 입장 순서 도래
+                    Q->>Q: 토큰 상태 변경 (WAITING -> ACTIVE)
+                    Q-->>U: "입장 가능" (Active Token)
+                end
+            end
+        end
     end
+    
+    Note over U: 좌석 선택 페이지로 이동
 ```
 
-### 2.2. 좌석 예매 (Booking Flow)
+### 2.2. 좌석 조회 및 선택 (Seat Selection Flow)
+> **Step 4**: 좌석 선택 페이지 -> 좌석 임시 배정
 
 ```mermaid
 sequenceDiagram
@@ -69,49 +89,58 @@ sequenceDiagram
     participant R as Redis
     participant D as MySQL
 
-    U->>C: 공연장 진입 (GET /api/concerts)
+    Note over U: 좌석 선택 페이지 진입
+    U->>C: 좌석 목록 조회 (GET /api/concerts/{id}/seats)
+    
     C->>R: 토큰 유효성 검증 (Active Token?)
-    alt Invalid Token
-        C-->>U: 대기열로 리다이렉트
+    alt Invalid/Expired Token
+        C-->>U: 401 Unauthorized (대기열 재진입 필요)
     else Valid Token
-        C->>D: 공연 목록 조회
-        D-->>C: Result
-        C-->>U: Show List
+        C->>D: 좌석 및 상태 조회
+        D-->>C: Seat List (Available/Held/Booked)
+        C-->>U: 좌석 맵 렌더링
     end
 
-    U->>C: 좌석 선택 (POST /api/bookings)
-    C->>R: Try Lock (Seat ID)
-    alt Lock Fail
-        C-->>U: "이미 선택된 좌석"
+    Note over U: 좌석 클릭 -> "결제하기"
+    U->>C: 좌석 선택 요청 (POST /api/bookings)
+    
+    C->>R: 좌석 Lock 시도 (SETNX)
+    alt Lock Fail (이미 선택됨)
+        C-->>U: "이미 선택된 좌석입니다"
     else Lock Success
-        C->>D: 좌석 상태 조회 & 임시 배정
-        D-->>C: Success
-        C-->>U: 예매 상태 (결제 대기)
+        C->>D: 임시 배정 데이터 생성 (Status: HELD)
+        D-->>C: OK
+        C-->>U: 예약 생성 완료 (결제 페이지 이동)
     end
 ```
 
 ### 2.3. 결제 (Payment Flow)
+> **Step 5**: 결제 페이지 -> 결제 완료
 
 ```mermaid
 sequenceDiagram
     participant U as User
     participant C as Core API Server
+	participant R as Redis
     participant D as MySQL
-    participant R as Redis
 
+    Note over U: 결제 페이지 (정보 확인)
     U->>C: 결제 요청 (POST /api/payments)
-    C->>D: 예매 건 조회 (Status: Holding?)
-    alt Expired or Invalid
-        C-->>U: "결제 시간 초과/유효하지 않음"
-    else Valid
-        C->>C: Payment Processing (Dummy Lgoic)
-        alt Pay Success
-            C->>D: 예매 확정 (Status: Paid)
-            C->>R: 좌석 Lock 영구 점유 or 해제 후 상태 변경
-            C->>U: 예매 완료 (Ticket Issued)
-        else Pay Fail
-            C->>D: 상태 복구 (Status: Available)
-            C->>R: Release Seat Lock
+    
+    C->>R: 토큰 검증
+    C->>D: 예매 건 유효성 확인 (만료 시간, Status: HELD)
+    
+    alt 유효하지 않음 (시간 초과 등)
+        C-->>U: 결제 실패 (시간 초과)
+        C->>R: 좌석 Lock 해제
+    else 유효함
+        C->>C: PG사 결제 승인 요청 (Mock)
+        
+        alt Payment Success
+            C->>D: 예매 확정 (Status: PAID)
+            C->>R: 대기열 토큰 만료 처리 (SREM Active Token)
+            C-->>U: 결제 성공 (예매 완료 페이지)
+        else Payment Fail
             C-->>U: 결제 실패 알림
         end
     end

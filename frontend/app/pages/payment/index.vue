@@ -127,8 +127,7 @@ const router = useRouter();
 
 const processPayment = (success: boolean) => {
     if (success) {
-        alert('결제가 완료되었습니다! 예매가 확정되었습니다.');
-        navigateTo('/');
+        navigateTo('/booking/complete');
     } else {
         alert('결제에 실패했습니다. 다시 시도해주세요.');
     }
