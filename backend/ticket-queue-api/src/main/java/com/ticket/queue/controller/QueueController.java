@@ -32,7 +32,6 @@ public class QueueController {
      */
     @GetMapping("/status")
     public ResponseEntity<QueueStatusResponse> getQueueStatus(
-            // API 명세에는 없지만 내부 Redis 구조상 concertId가 필요하여 임시 유지, 혹은 명세 수정 필요
             @RequestParam Long concertId,
             @RequestHeader(value = "Queue-Token") String token) {
             
