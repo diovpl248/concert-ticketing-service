@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import com.ticket.core.domain.seat.repository.SeatRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+    private final SeatRepository seatRepository;
 
     @Transactional
     public Booking createBooking(User user, Seat seat) {
@@ -41,7 +43,7 @@ public class BookingService {
     }
 
     @Transactional
-    public void completeBooking(Long bookingId, Long userId) {
+    public Booking validateAndGetBooking(Long bookingId, Long userId) {
         Booking booking = getBooking(bookingId);
         
         if (!booking.getUser().getId().equals(userId)) {
@@ -50,11 +52,24 @@ public class BookingService {
         
         if (booking.getExpiresAt().isBefore(LocalDateTime.now())) {
             booking.cancel();
-            // 실제 환경에서는 여기서 좌석도 다시 해제해야 합니다.
-            // 하지만 보통 이 부분은 UseCase나 도메인 이벤트에 의해 처리됩니다.
+            
+            // 좌석 상태도 함께 다시 AVAILABLE로 변경
+            Seat seat = booking.getSeat();
+            seat.release();
+            seatRepository.save(seat);
+
             throw new BusinessException(ErrorCode.BOOKING_EXPIRED);
         }
-        
+        return booking;
+    }
+
+    @Transactional
+    public void completeBooking(Booking booking) {
         booking.markAsPaid();
+        
+        // 결제 완료에 따른 좌석 상태 변경 (HELD -> BOOKED)
+        Seat seat = booking.getSeat();
+        seat.book();
+        seatRepository.save(seat);
     }
 }
