@@ -41,8 +41,12 @@ public class BookingService {
     }
 
     @Transactional
-    public void completeBooking(Long bookingId) {
+    public void completeBooking(Long bookingId, Long userId) {
         Booking booking = getBooking(bookingId);
+        
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_BOOKING);
+        }
         
         if (booking.getExpiresAt().isBefore(LocalDateTime.now())) {
             booking.cancel();

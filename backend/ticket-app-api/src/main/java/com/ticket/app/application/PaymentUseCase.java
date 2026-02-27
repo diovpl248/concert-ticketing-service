@@ -23,14 +23,14 @@ public class PaymentUseCase {
     private final SeatService seatService;
     private final QueueRedisRepository queueRedisRepository;
 
-    public PaymentResponse processPayment(PaymentRequest request, String queueToken) {
+    public PaymentResponse processPayment(PaymentRequest request, String queueToken, Long userId) {
         // 1. 대기열 토큰 검증
         if (!queueRedisRepository.isActiveToken(request.concertId(), queueToken)) {
             throw new BusinessException(ErrorCode.NOT_ACTIVE_QUEUE);
         }
 
-        // 2. 예약 상태 변경 (결제 완료)
-        bookingService.completeBooking(request.bookingId());
+        // 2. 예약 상태 변경 (결제 완료 및 소유권 확인)
+        bookingService.completeBooking(request.bookingId(), userId);
         Booking booking = bookingService.getBooking(request.bookingId());
 
         // 3. 결제 처리 및 내역 저장

@@ -23,7 +23,8 @@ public class PaymentController {
     public ResponseEntity<PaymentResponse> processPayment(
             @RequestHeader(value = "Queue-Token") String queueToken,
             @Valid @RequestBody PaymentRequest request) {
-        PaymentResponse response = paymentUseCase.processPayment(request, queueToken);
+		Long userId = 1L; // TODO: 인증 정보에서 가져오도록 변경
+        PaymentResponse response = paymentUseCase.processPayment(request, queueToken, userId);
         return ResponseEntity.ok(response);
     }
 }
