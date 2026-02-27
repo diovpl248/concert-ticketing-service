@@ -35,4 +35,9 @@ public class ConcertService {
         getConcert(concertId);
         return concertDateRepository.findByConcertId(concertId);
     }
+
+    public ConcertDate getConcertDate(Long dateId) {
+        return concertDateRepository.findById(dateId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CONCERT_DATE_NOT_FOUND));
+    }
 }
