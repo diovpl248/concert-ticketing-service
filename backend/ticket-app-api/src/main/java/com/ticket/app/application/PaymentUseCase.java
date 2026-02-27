@@ -8,7 +8,6 @@ import com.ticket.core.domain.booking.entity.Booking;
 import com.ticket.core.domain.booking.service.BookingService;
 import com.ticket.core.domain.payment.entity.Payment;
 import com.ticket.core.domain.payment.service.PaymentService;
-import com.ticket.core.domain.payment.service.PaymentService;
 import com.ticket.core.domain.queue.repository.QueueRedisRepository;
 import com.ticket.core.domain.seat.service.SeatService;
 import org.springframework.stereotype.Component;
