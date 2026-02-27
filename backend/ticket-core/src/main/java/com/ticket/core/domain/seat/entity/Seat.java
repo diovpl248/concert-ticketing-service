@@ -61,4 +61,22 @@ public class Seat {
         this.price = price;
         this.status = status;
     }
+
+    public void reserve() {
+        if (this.status != SeatStatus.AVAILABLE) {
+            throw new IllegalStateException("Seat is not available."); // Or use a custom exception later
+        }
+        this.status = SeatStatus.HELD;
+    }
+
+    public void book() {
+        if (this.status != SeatStatus.HELD) {
+            throw new IllegalStateException("Seat must be held before booking.");
+        }
+        this.status = SeatStatus.BOOKED;
+    }
+
+    public void release() {
+        this.status = SeatStatus.AVAILABLE;
+    }
 }

@@ -13,7 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,7 +35,7 @@ public class Booking {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
 
@@ -53,5 +52,16 @@ public class Booking {
         this.seat = seat;
         this.status = status;
         this.expiresAt = expiresAt;
+    }
+
+    public void markAsPaid() {
+        if (this.status != BookingStatus.HELD) {
+            throw new IllegalStateException("Only HELD bookings can be paid.");
+        }
+        this.status = BookingStatus.PAID;
+    }
+
+    public void cancel() {
+        this.status = BookingStatus.CANCELLED;
     }
 }

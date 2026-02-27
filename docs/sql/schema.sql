@@ -53,7 +53,7 @@ CREATE TABLE `bookings` (
     `expires_at` DATETIME,
     PRIMARY KEY (`id`),
     KEY `idx_user_id` (`user_id`),
-    UNIQUE KEY `ux_seat_id` (`seat_id`) -- One active booking per seat
+    KEY `idx_seat_id` (`seat_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Payments Table (Added for /api/payments)

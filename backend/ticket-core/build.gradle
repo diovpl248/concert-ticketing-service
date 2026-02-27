@@ -5,8 +5,8 @@ dependencies {
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
     
-    // Redis (Common)
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // Redis (Redisson for Distributed Locks and Data)
+    implementation 'org.redisson:redisson-spring-boot-starter:3.37.0'
     
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'

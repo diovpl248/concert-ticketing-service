@@ -21,7 +21,7 @@ public class QueueController {
      */
     @PostMapping("/tokens")
     public ResponseEntity<QueueTokenResponse> issueToken(@Valid @RequestBody QueueTokenRequest request) {
-        // TODO: 향후 Authorization 헤더에서 JWT 토큰을 파싱하여 실제 userId 호출 필요
+        // TODO: 향후 Authorization 헤더에서 JWT 토큰을 파싱하여 실제 userId 추출 필요
         Long dummyUserId = 1L;
         QueueTokenResponse response = queueTokenUseCase.issueToken(request, dummyUserId);
         return ResponseEntity.ok(response);

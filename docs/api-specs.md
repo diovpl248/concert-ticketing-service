@@ -30,7 +30,7 @@
   ```
 
 ### 2.2. 대기열 상태 확인 (Polling)
-- **GET** `/queue/status`
+- **GET** `/queue/status?concertId={concertId}`
 - **Header**: `Queue-Token: {token}`
 - **Description**: 현재 대기 상태를 확인합니다. 주기적으로 호출하여 자신의 순서를 확인합니다.
 - **Response**:
@@ -84,7 +84,7 @@
   ```
 
 ### 3.3. 좌석 조회 (Requires Active Token)
-- **GET** `/api/concerts/{concertId}/seats?dateId={dateId}`
+- **GET** `/api/concerts/{concertId}/dates/{dateId}/seats`
 - **Header**: `Queue-Token: {active_token}`
 - **Description**: 예약 가능한 좌석 정보를 조회합니다. **유효한 Active 토큰**이 헤더에 포함되어야 합니다.
 - **Response**:
