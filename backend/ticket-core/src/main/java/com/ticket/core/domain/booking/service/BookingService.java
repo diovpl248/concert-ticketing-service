@@ -52,7 +52,7 @@ public class BookingService {
             booking.cancel();
             // 실제 환경에서는 여기서 좌석도 다시 해제해야 합니다.
             // 하지만 보통 이 부분은 UseCase나 도메인 이벤트에 의해 처리됩니다.
-            throw new BusinessException(ErrorCode.BOOKING_NOT_FOUND); // 커스텀 에러 사용
+            throw new BusinessException(ErrorCode.BOOKING_EXPIRED);
         }
         
         booking.markAsPaid();
