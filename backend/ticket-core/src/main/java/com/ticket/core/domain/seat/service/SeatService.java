@@ -67,7 +67,7 @@ public class SeatService {
 
             // 3. 비즈니스 락 (임시 배정) 정보를 Redis에 저장 (5분 TTL)
             RBucket<Long> heldBucket = redissonClient.getBucket(heldKey);
-            heldBucket.set(userId, 5, TimeUnit.MINUTES;
+            heldBucket.set(userId, 5, TimeUnit.MINUTES);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
