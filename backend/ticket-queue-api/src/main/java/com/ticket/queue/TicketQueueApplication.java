@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication(
 	exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-	scanBasePackages = {"com.ticket.core", "com.ticket.queue"}
+	scanBasePackages = {"com.ticket.core.common", "com.ticket.core.domain.queue", "com.ticket.core.config", "com.ticket.queue"}
 )
 public class TicketQueueApplication {
 

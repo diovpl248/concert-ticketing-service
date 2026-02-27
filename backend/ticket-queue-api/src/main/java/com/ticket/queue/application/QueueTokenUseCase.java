@@ -11,18 +11,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class QueueTokenUseCase {
 
     private final QueueRedisRepository queueRedisRepository;
 
     // 최대 활성 사용자 수 (예: 1000명)
     private static final long MAX_ACTIVE_USERS = 1L;
-
-    public QueueTokenUseCase(QueueRedisRepository queueRedisRepository) {
-        this.queueRedisRepository = queueRedisRepository;
-    }
 
     /**
      * 토큰 발급 및 대기열/활성열 진입
@@ -65,7 +63,7 @@ public class QueueTokenUseCase {
         Optional<Long> rankOpt = queueRedisRepository.getWaitRank(concertId, token);
         
         if (rankOpt.isPresent()) {
-            Long rank = rankOpt.get(); // 0-based
+            Long rank = rankOpt.get(); // 0부터 시작하는 인덱스
             Long position = rank + 1;
             // 예상 대기 시간 등 계산 (예: 1초당 10명 입장 가정)
             long estimatedWaitTime = (position / 10) + 1; 
@@ -80,7 +78,7 @@ public class QueueTokenUseCase {
     }
 
     private String generateToken(Long userId) {
-        // 실제로는 userId와 함께 JWT 등을 활용하거나 UUID 발급 후 매핑
+        // 실제 환경에서는 UUID 발급 후 JWT 등과 매핑하거나 함께 활용해야 합니다.
         return UUID.randomUUID().toString() + "-" + userId;
     }
 }
