@@ -1,10 +1,6 @@
 package com.ticket.core.config;
 
-import com.ticket.core.common.exception.BusinessException;
-import com.ticket.core.common.exception.ErrorCode;
-import com.ticket.core.domain.seat.entity.Seat;
 import com.ticket.core.domain.seat.repository.SeatRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
