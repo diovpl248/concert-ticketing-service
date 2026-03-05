@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   css: [
-    './app/assets/css/main.css'
+    '~/assets/css/main.css'
   ],
   routeRules: {
     '/api/**': { proxy: 'http://localhost:18081/api/**' },
