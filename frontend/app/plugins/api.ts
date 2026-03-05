@@ -1,11 +1,9 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 
-export default defineNuxtPlugin((nuxtApp: any) => {
-  const defaultUrl = '/'
-
-  const api = axios.create({
-    baseURL: defaultUrl,
+export default defineNuxtPlugin(() => {
+  const api: AxiosInstance = axios.create({
+    baseURL: '/',
     headers: {
       common: {
         Accept: 'application/json, text/plain, */*'
@@ -13,19 +11,15 @@ export default defineNuxtPlugin((nuxtApp: any) => {
     }
   })
 
-  // 요청 인터셉터 추가
+  // 요청 인터셉터
   api.interceptors.request.use((config) => {
-    // 필요한 경우 토큰 등 헤더 추가 로직
     return config
   })
 
-  // 응답 인터셉터 추가
+  // 응답 인터셉터
   api.interceptors.response.use(
-    (response) => {
-      return response
-    },
+    (response) => response,
     (error) => {
-      // 전역 에러 처리
       console.error('API Error:', error)
       return Promise.reject(error)
     }
@@ -33,7 +27,14 @@ export default defineNuxtPlugin((nuxtApp: any) => {
 
   return {
     provide: {
-      api: api
+      api
     }
   }
 })
+
+// 타입 추론 용도
+declare module '#app' {
+  interface NuxtApp {
+    $api: AxiosInstance
+  }
+}

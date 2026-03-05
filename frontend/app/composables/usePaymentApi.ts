@@ -1,8 +1,7 @@
-import { useNuxtApp } from '#imports';
 import type { PaymentRequest, PaymentResponse } from '~/types/payment';
 
 export const usePaymentApi = () => {
-  const { $api } = useNuxtApp() as any;
+  const { $api } = useNuxtApp();
 
   return {
     processPayment: async (request: PaymentRequest, queueToken: string): Promise<PaymentResponse> => {

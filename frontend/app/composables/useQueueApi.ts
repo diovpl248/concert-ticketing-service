@@ -1,8 +1,7 @@
-import { useNuxtApp } from '#imports';
 import type { QueueTokenResponse, QueueStatusResponse } from '~/types/queue';
 
 export const useQueueApi = () => {
-  const { $api } = useNuxtApp() as any;
+  const { $api } = useNuxtApp();
 
   return {
     issueToken: async (concertId: number): Promise<QueueTokenResponse> => {

@@ -1,8 +1,7 @@
-import { useNuxtApp } from '#imports';
 import type { BookingRequest, BookingResponse } from '~/types/booking';
 
 export const useBookingApi = () => {
-  const { $api } = useNuxtApp() as any;
+  const { $api } = useNuxtApp();
 
   return {
     createBooking: async (request: BookingRequest, queueToken: string): Promise<BookingResponse> => {
