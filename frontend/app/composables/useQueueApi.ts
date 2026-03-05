@@ -9,7 +9,8 @@ export const useQueueApi = () => {
       return res.data;
     },
     getStatus: async (concertId: number, token: string): Promise<QueueStatusResponse> => {
-      const res = await $api.get(`/queue/status?concertId=${concertId}`, {
+      const res = await $api.get(`/queue/status`, {
+        params: { concertId },
         headers: { 'Queue-Token': token }
       });
       return res.data;
