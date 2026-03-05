@@ -66,16 +66,16 @@
         <div class="bg-white rounded-3xl p-5 shadow-sm space-y-3 border border-gray-100">
             <div class="flex justify-between items-center text-sm">
                 <span class="text-gray-500 font-medium">티켓 금액 (1매)</span>
-                <span class="font-semibold text-gray-900">150,000원</span>
+                <span class="font-semibold text-gray-900">{{ amount.toLocaleString() }}원</span>
             </div>
             <div class="flex justify-between items-center text-sm">
                 <span class="text-gray-500 font-medium">예매 수수료</span>
-                <span class="font-semibold text-gray-900">2,000원</span>
+                <span class="font-semibold text-gray-900">0원</span>
             </div>
             <div class="pt-4 border-t border-dashed border-gray-200 mt-2">
                 <div class="flex justify-between items-end">
                     <span class="text-base font-bold text-gray-900">총 결제 금액</span>
-                    <span class="text-2xl font-bold text-indigo-600 tracking-tight">152,000원</span>
+                    <span class="text-2xl font-bold text-indigo-600 tracking-tight">{{ amount.toLocaleString() }}원</span>
                 </div>
             </div>
         </div>
@@ -103,13 +103,21 @@
     <!-- Bottom Action -->
     <div class="bg-white border-t border-gray-100 p-5 pb-8 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] rounded-t-[32px] z-20">
         <div class="space-y-3">
-            <button class="w-full h-14 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-2xl font-bold text-base shadow-lg shadow-indigo-200/50 transition-all flex items-center justify-center gap-2 group" @click="processPayment(true)">
-                <span>152,000원 결제하기</span>
-                <component :is="ArrowRight" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <button 
+                class="w-full h-14 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-2xl font-bold text-base shadow-lg shadow-indigo-200/50 transition-all flex items-center justify-center gap-2 group disabled:opacity-50" 
+                @click="processPayment(true)"
+                :disabled="isProcessing"
+            >
+                <span>{{ isProcessing ? '결제 처리중...' : amount.toLocaleString() + '원 결제하기' }}</span>
+                <component :is="ArrowRight" class="w-5 h-5 group-hover:translate-x-1 transition-transform" v-if="!isProcessing" />
             </button>
-             <button class="w-full h-14 bg-white border border-red-200 text-red-500 hover:bg-red-50 active:bg-red-100 rounded-2xl font-bold text-sm transition-colors flex items-center justify-center gap-2" @click="processPayment(false)">
+             <button 
+                 class="w-full h-14 bg-white border border-red-200 text-red-500 hover:bg-red-50 active:bg-red-100 rounded-2xl font-bold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50" 
+                 @click="processPayment(false)"
+                 :disabled="isProcessing"
+             >
                  <component :is="AlertCircle" class="w-5 h-5" />
-                 결제 실패 시뮬레이션
+                 결제 실패 취소
              </button>
         </div>
     </div>
@@ -118,18 +126,42 @@
 
 <script setup lang="ts">
 import { ChevronLeft, MapPin, Calendar, Info, ArrowRight, AlertCircle } from 'lucide-vue-next';
+import { useRoute, useRouter } from '#imports';
+import { usePaymentStore } from '~/stores/payment.store';
+import { storeToRefs } from 'pinia';
 
 definePageMeta({
   layout: 'process'
 });
 
+const route = useRoute();
 const router = useRouter();
 
-const processPayment = (success: boolean) => {
-    if (success) {
+const paymentStore = usePaymentStore();
+const { isProcessing } = storeToRefs(paymentStore);
+
+const bookingId = Number(route.query.bookingId);
+const queueToken = route.query.queueToken as string;
+const concertId = Number(route.query.concertId);
+const amount = Number(route.query.amount) || 0;
+
+const processPayment = async (success: boolean) => {
+    if (!success) {
+        alert('결제를 취소했습니다.');
+        navigateTo('/');
+        return;
+    }
+    
+    try {
+        await paymentStore.processPayment({
+            bookingId,
+            paymentMethod: 'CREDIT_CARD',
+            amount
+        }, queueToken);
         navigateTo('/booking/complete');
-    } else {
-        alert('결제에 실패했습니다. 다시 시도해주세요.');
+    } catch(e) {
+        alert('결제 처리 중 에러가 발생했습니다.');
+        console.error('Payment failed', e);
     }
 }
 </script>

@@ -37,18 +37,18 @@
         </div>
 
         <!-- Seats Grid -->
-        <div class="grid gap-4">
-            <div v-for="row in 4" :key="row" class="flex gap-2 justify-center">
+        <div class="grid gap-4" v-if="seats.length > 0">
+            <div v-for="row in rows" :key="row" class="flex gap-2 justify-center">
                 <button 
-                    v-for="col in 6" 
-                    :key="`${row}-${col}`"
+                    v-for="seat in getSeatsByRow(row)" 
+                    :key="seat.id"
                     :class="['w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold transition-all shadow-sm', 
-                             getSeatClass(row, col)]"
-                    :disabled="isOccupied(row, col)"
-                    @click="toggleSeat(row, col)"
+                             getSeatClass(seat)]"
+                    :disabled="seat.status !== 'AVAILABLE'"
+                    @click="toggleSeat(seat)"
                 >
-                    <component :is="X" v-if="isOccupied(row, col)" class="w-4 h-4 text-white" />
-                    <span v-else>{{ String.fromCharCode(64+row) }}{{ col }}</span>
+                    <component :is="X" v-if="seat.status !== 'AVAILABLE'" class="w-4 h-4 text-white" />
+                    <span v-else>{{ seat.rowNo }}{{ seat.colNo }}</span>
                 </button>
             </div>
         </div>
@@ -62,27 +62,27 @@
             <div>
                 <h3 class="text-sm text-gray-500 font-medium mb-3">선택 좌석</h3>
                 <div class="flex flex-wrap gap-2">
-                    <div v-for="seat in selectedSeats" :key="seat.id" class="bg-blue-50/80 border border-blue-100 px-3 py-1.5 rounded-full flex items-center gap-3 shadow-sm">
-                        <span class="text-xs font-bold text-blue-600">{{ seat.label }}</span>
-                        <span class="text-xs font-medium text-blue-800">150,000원</span>
-                        <button class="ml-1 text-blue-400 hover:text-blue-600" @click="toggleSeat(seat.r, seat.c)">
+                    <div v-if="selectedSeat" class="bg-blue-50/80 border border-blue-100 px-3 py-1.5 rounded-full flex items-center gap-3 shadow-sm">
+                        <span class="text-xs font-bold text-blue-600">{{ selectedSeat.rowNo }}{{ selectedSeat.colNo }}</span>
+                        <span class="text-xs font-medium text-blue-800">{{ selectedSeat.price.toLocaleString() }}원</span>
+                        <button class="ml-1 text-blue-400 hover:text-blue-600" @click="selectedSeat = null">
                             <component :is="X" class="w-3 h-3" />
                         </button>
                     </div>
-                    <span v-if="selectedSeats.length === 0" class="text-sm text-gray-400">좌석을 선택해주세요</span>
+                    <span v-else class="text-sm text-gray-400">좌석을 선택해주세요</span>
                 </div>
             </div>
             <div class="flex items-center justify-between border-t border-gray-100 pt-4">
                 <div class="text-left">
                     <p class="text-xs text-gray-500 mb-0.5">총 결제 금액</p>
-                    <p class="text-2xl font-bold text-gray-900 tracking-tight">{{ (selectedSeats.length * 150000).toLocaleString() }}원</p>
+                    <p class="text-2xl font-bold text-gray-900 tracking-tight">{{ selectedSeat ? selectedSeat.price.toLocaleString() : '0' }}원</p>
                 </div>
                 <button 
                     class="bg-gray-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    :disabled="selectedSeats.length === 0"
+                    :disabled="!selectedSeat || isBooking"
                     @click="goToCheckout"
                 >
-                    결제하기
+                    {{ isBooking ? '예매 중...' : '결제하기' }}
                 </button>
             </div>
         </div>
@@ -92,45 +92,85 @@
 
 <script setup lang="ts">
 import { ChevronLeft, MoreHorizontal, X } from 'lucide-vue-next';
+import { useRoute, useRouter } from '#imports';
+import { useConcertStore } from '~/stores/concert.store';
+import { useBookingStore } from '~/stores/booking.store';
+import { storeToRefs } from 'pinia';
+import type { SeatResponse } from '~/types/concert';
 
 definePageMeta({
   layout: 'process'
 });
 
+const route = useRoute();
 const router = useRouter();
-const selectedSeats = ref<{r: number, c: number, id: string, label: string}[]>([]);
 
-const isOccupied = (r: number, c: number) => {
-    // Mock logic: some random seats are occupied
-    return (r + c) % 5 === 0;
+const concertStore = useConcertStore();
+const bookingStore = useBookingStore();
+const { currentSeats: seats } = storeToRefs(concertStore);
+const { isBooking } = storeToRefs(bookingStore);
+
+const selectedSeat = ref<any | null>(null);
+
+const concertId = Number(route.query.concertId) || Number(route.params.id);
+const dateId = Number(route.query.dateId);
+const queueToken = route.query.queueToken as string;
+
+// Computed for rows
+const rows = computed(() => {
+    const rowSet = new Set(seats.value.map((s: SeatResponse) => s.rowNo));
+    return Array.from(rowSet).sort();
+});
+
+const getSeatsByRow = (rowNo: string) => {
+    return seats.value.filter((s: SeatResponse) => s.rowNo === rowNo).sort((a: SeatResponse, b: SeatResponse) => Number(a.colNo) - Number(b.colNo));
+};
+
+onMounted(async () => {
+    try {
+        await concertStore.fetchSeats(concertId, dateId, queueToken);
+    } catch (e) {
+        console.error('Failed to load seats', e);
+        alert('좌석 정보를 불러오지 못했습니다.');
+    }
+});
+
+const isSelected = (seat: any) => {
+    return selectedSeat.value?.id === seat.id;
 }
 
-const isSelected = (r: number, c: number) => {
-    return selectedSeats.value.some(s => s.r === r && s.c === c);
-}
-
-const getSeatClass = (r: number, c: number) => {
-    if (isOccupied(r, c)) return 'bg-gray-300 cursor-not-allowed';
-    if (isSelected(r, c)) return 'bg-blue-400 text-white ring-2 ring-blue-100';
+const getSeatClass = (seat: any) => {
+    if (seat.status !== 'AVAILABLE') return 'bg-gray-300 cursor-not-allowed';
+    if (isSelected(seat)) return 'bg-blue-400 text-white ring-2 ring-blue-100';
     return 'bg-gray-200 hover:bg-gray-300 text-transparent hover:text-gray-500';
 }
 
-const toggleSeat = (r: number, c: number) => {
-    if (isOccupied(r, c)) return;
+const toggleSeat = (seat: any) => {
+    if (seat.status !== 'AVAILABLE') return;
     
-    if (isSelected(r, c)) {
-        selectedSeats.value = selectedSeats.value.filter(s => !(s.r === r && s.c === c));
+    if (isSelected(seat)) {
+        selectedSeat.value = null;
     } else {
-        if (selectedSeats.value.length >= 2) return; // Limit 2
-        selectedSeats.value.push({
-            r, c,
-            id: `${r}-${c}`,
-            label: `${String.fromCharCode(64+r)}${c}`
-        });
+        selectedSeat.value = seat; // allow only 1 seat
     }
 }
 
-const goToCheckout = () => {
-    navigateTo('/payment');
+const goToCheckout = async () => {
+    if (!selectedSeat.value) return;
+    try {
+        const res = await bookingStore.createBooking({
+            concertId,
+            dateId,
+            seatId: selectedSeat.value.id
+        }, queueToken);
+        const bookingId = res.bookingId;
+        navigateTo(`/payment?bookingId=${bookingId}&queueToken=${queueToken}&amount=${selectedSeat.value.price}&concertId=${concertId}`);
+    } catch (e: any) {
+        console.error('Booking failed', e);
+        alert('예약 처리에 실패했습니다. (이미 선점된 좌석이거나 대기열 토큰 오류)');
+        // refresh seats
+        await concertStore.fetchSeats(concertId, dateId, queueToken);
+        selectedSeat.value = null;
+    }
 }
 </script>

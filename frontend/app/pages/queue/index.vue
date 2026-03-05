@@ -57,38 +57,60 @@
 
 <script setup lang="ts">
 import { ChevronLeft, Hourglass, Info, Bell, Lock } from 'lucide-vue-next';
+import { useRoute, useRouter } from '#imports';
+import { useQueueStore } from '~/stores/queue.store';
+import { storeToRefs } from 'pinia';
 
 definePageMeta({
   layout: 'process'
 });
 
-const position = ref(100);
-const estimatedMinutes = ref(12);
-const progress = ref(65);
+const route = useRoute();
+const router = useRouter();
+const queueStore = useQueueStore();
+const { position, estimatedMinutes, status, token } = storeToRefs(queueStore);
 
+const progress = ref(20);
 const formattedPosition = computed(() => position.value.toLocaleString());
 
 const goBack = () => {
   navigateTo('/');
 }
 
-// Mock Polling Logic
-onMounted(() => {
-  const interval = setInterval(() => {
-    if (position.value > 0) {
-      position.value -= Math.floor(Math.random() * 50);
-      if (position.value < 0) position.value = 0;
-      
-      // Update progress and time mock
-      progress.value = Math.min(100, progress.value + 1);
-      estimatedMinutes.value = Math.max(0, Math.ceil(position.value / 100));
+onMounted(async () => {
+  const concertId = Number(route.query.concertId);
+  const dateId = Number(route.query.dateId);
+  if (!concertId) return navigateTo('/');
 
-      if (position.value === 0) {
-        clearInterval(interval);
-        navigateTo('/concert/1/seat'); // Go to seat selection
-      }
+  try {
+    await queueStore.enterQueue(concertId);
+    
+    if (status.value === 'ACTIVE') {
+      return navigateTo(`/concert/${concertId}/seat?dateId=${dateId}&queueToken=${token.value}`);
     }
-  }, 1000); // Fast mock update
+  } catch (e) {
+    console.error('Queue join failed', e);
+    return;
+  }
+
+  const interval = setInterval(async () => {
+    if (!token.value || status.value === 'ACTIVE') {
+      clearInterval(interval);
+      return;
+    }
+    
+    try {
+      await queueStore.pollStatus(concertId);
+      progress.value = Math.min(100, progress.value + 5);
+
+      if (status.value === 'ACTIVE') {
+        clearInterval(interval);
+        navigateTo(`/concert/${concertId}/seat?dateId=${dateId}&queueToken=${token.value}`);
+      }
+    } catch(e) {
+      clearInterval(interval);
+    }
+  }, 3000); // 3 seconds polling
 });
 </script>
 

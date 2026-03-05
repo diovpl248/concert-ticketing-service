@@ -85,58 +85,22 @@
 
 <script setup lang="ts">
 import { Bell, Search, Calendar, MapPin, Heart } from 'lucide-vue-next';
+import { useConcertStore } from '~/stores/concert.store';
+import { storeToRefs } from 'pinia';
 
 const activeCategory = ref('전체');
 const categories = ['전체', 'K-POP', '뮤지컬', '클래식', '인디', '전시'];
 
-const trendingConcerts = [
-  {
-    id: 1,
-    title: '네온 나이츠 월드 투어 2024',
-    category: 'K-POP',
-    date: '10월 24일',
-    venue: '서울 잠실 올림픽 주경기장',
-    image: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=1000&auto=format&fit=crop',
-  },
-  {
-    id: 2,
-    title: '오페라의 유령 오리지널 내한',
-    category: '뮤지컬',
-    date: '11월 12일',
-    venue: '샤롯데씨어터',
-    image: 'https://images.unsplash.com/photo-1562329265-95a6d7a83440?q=80&w=1370&auto=format&fit=crop',
-  }
-];
+const concertStore = useConcertStore();
+const { trendingConcerts, upcomingConcerts } = storeToRefs(concertStore);
 
-const upcomingConcerts = [
-  {
-    id: 3,
-    title: '베토벤 교향곡 9번: 합창',
-    category: '클래식',
-    date: '12월 05일',
-    venue: '예술의 전당 콘서트홀',
-    image: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?q=80&w=1470&auto=format&fit=crop',
-    badge: 'D-5'
-  },
-  {
-    id: 4,
-    title: '블랙핑크 월드 투어 [BORN PINK]',
-    category: 'K-POP',
-    date: '1월 15일',
-    venue: 'KSPO 돔',
-    image: 'https://images.unsplash.com/photo-1563841930606-67e2bce48b78?q=80&w=736&auto=format&fit=crop',
-    badge: 'HOT'
-  },
-  {
-    id: 5,
-    title: '한여름 밤의 재즈 페스티벌',
-    category: '인디',
-    date: '2월 02일',
-    venue: '블루노트 서울',
-    image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=1000&auto=format&fit=crop',
-    badge: null
+onMounted(async () => {
+  try {
+    await concertStore.fetchConcertsList();
+  } catch (error) {
+    console.error('Failed to fetch concerts', error);
   }
-];
+});
 
 const getTagColor = (category: string) => {
   switch (category) {
