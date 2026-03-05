@@ -10,8 +10,9 @@ export const useConcertStore = defineStore('concert', () => {
   const currentDates = ref<ConcertDateResponse[]>([]);
   const currentSeats = ref<SeatResponse[]>([]);
 
+  const concertApi = useConcertApi();
+
   const fetchConcertsList = async () => {
-    const concertApi = useConcertApi();
     const data = await concertApi.getConcerts();
     const formatted: DisplayConcert[] = data.map((c) => ({
       id: c.id,
@@ -27,17 +28,11 @@ export const useConcertStore = defineStore('concert', () => {
   };
 
   const fetchConcertDetail = async (id: number) => {
-    const concertApi = useConcertApi();
-    const [concertRes, datesRes] = await Promise.all([
-      concertApi.getConcert(id),
-      concertApi.getConcertDates(id)
-    ]);
+    const concertRes = await concertApi.getConcert(id);
     currentConcert.value = concertRes;
-    currentDates.value = datesRes;
   };
 
   const fetchSeats = async (concertId: number, dateId: number, queueToken: string) => {
-    const concertApi = useConcertApi();
     const data = await concertApi.getSeats(concertId, dateId, queueToken);
     currentSeats.value = data;
   };

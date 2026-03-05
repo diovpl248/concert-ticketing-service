@@ -4,9 +4,15 @@ export enum PaymentStatus {
   CANCELLED = 'CANCELLED'
 }
 
+export enum PaymentMethod {
+  CARD = 'CARD',
+  VIRTUAL_ACCOUNT = 'VIRTUAL_ACCOUNT'
+}
+
 export interface PaymentRequest {
+  concertId: number;
   bookingId: number;
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
   amount: number;
 }
 
