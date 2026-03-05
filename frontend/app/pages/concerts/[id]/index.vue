@@ -14,7 +14,7 @@
       <h3 class="font-bold">날짜 및 회차 선택</h3>
       <div class="flex gap-3 overflow-x-auto pb-2">
         <button 
-          v-for="date in dates" 
+          v-for="date in concert.dates" 
           :key="date.id"
           :class="['px-4 py-2 border rounded-lg text-sm shrink-0', selectedDateId === date.id ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-500']"
           @click="selectedDateId = date.id"
@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronLeft } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
 import { useConcertStore } from '~/stores/concert.store';
 import { storeToRefs } from 'pinia';
@@ -48,7 +47,7 @@ import { storeToRefs } from 'pinia';
 const route = useRoute();
 const router = useRouter();
 const concertStore = useConcertStore();
-const { currentConcert: concert, currentDates: dates } = storeToRefs(concertStore);
+const { currentConcert: concert } = storeToRefs(concertStore);
 
 const selectedDateId = ref<number | null>(null);
 
@@ -57,9 +56,11 @@ onMounted(async () => {
         const concertId = Number(route.params.id);
         await concertStore.fetchConcertDetail(concertId);
         
-        if (dates.value.length > 0 && dates.value[0]) {
-            selectedDateId.value = dates.value[0].id;
-        }
+		if (concert.value) {
+			if (concert.value.dates.length > 0 && concert.value.dates[0]) {
+				selectedDateId.value = concert.value.dates[0].id;
+			}
+		}
     } catch (e) {
         console.error('Failed to load concert details', e);
     }

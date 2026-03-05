@@ -29,7 +29,7 @@
       <section>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-bold text-gray-900">실시간 인기 공연</h2>
-          <NuxtLink class="text-xs font-medium text-gray-400 hover:text-black transition-colors" to="/concerts">전체보기</NuxtLink>
+          <NuxtLink class="text-xs font-medium text-gray-400 hover:text-black transition-colors" to="/">전체보기</NuxtLink>
         </div>
         <div class="flex overflow-x-auto hide-scrollbar gap-4 -mx-5 px-5 pb-4 snap-x snap-mandatory">
           <div v-for="concert in trendingConcerts" :key="concert.id" class="snap-center shrink-0 w-[80vw] relative rounded-[16px] overflow-hidden aspect-[16/10] shadow-sm border border-gray-100 group" @click="goToConcert(concert.id)">
@@ -113,7 +113,7 @@ const getTagColor = (category: string) => {
 };
 
 const goToConcert = (id: number) => {
-  navigateTo(`/concert/${id}`);
+  navigateTo(`/concerts/${id}`);
 };
 </script>
 

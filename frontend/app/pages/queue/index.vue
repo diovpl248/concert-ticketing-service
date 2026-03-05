@@ -60,6 +60,7 @@ import { ChevronLeft, Hourglass, Info, Bell, Lock } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
 import { useQueueStore } from '~/stores/queue.store';
 import { storeToRefs } from 'pinia';
+import { QueueStatus } from '~/types/queue';
 
 definePageMeta({
   layout: 'process'
@@ -85,8 +86,8 @@ onMounted(async () => {
   try {
     await queueStore.enterQueue(concertId);
     
-    if (status.value === 'ACTIVE') {
-      return navigateTo(`/concert/${concertId}/seat?dateId=${dateId}&queueToken=${token.value}`);
+    if (status.value === QueueStatus.ACTIVE) {
+      return navigateTo(`/concerts/${concertId}/seats?dateId=${dateId}&queueToken=${token.value}`);
     }
   } catch (e) {
     console.error('Queue join failed', e);
@@ -94,7 +95,8 @@ onMounted(async () => {
   }
 
   const interval = setInterval(async () => {
-    if (!token.value || status.value === 'ACTIVE') {
+	let isActive = status.value === QueueStatus.ACTIVE;
+    if (!token.value || isActive) {
       clearInterval(interval);
       return;
     }
@@ -103,9 +105,10 @@ onMounted(async () => {
       await queueStore.pollStatus(concertId);
       progress.value = Math.min(100, progress.value + 5);
 
-      if (status.value === 'ACTIVE') {
+      isActive = status.value === QueueStatus.ACTIVE;
+      if (isActive) {
         clearInterval(interval);
-        navigateTo(`/concert/${concertId}/seat?dateId=${dateId}&queueToken=${token.value}`);
+        navigateTo(`/concerts/${concertId}/seats?dateId=${dateId}&queueToken=${token.value}`);
       }
     } catch(e) {
       clearInterval(interval);

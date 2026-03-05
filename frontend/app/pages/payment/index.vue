@@ -129,6 +129,7 @@ import { ChevronLeft, MapPin, Calendar, Info, ArrowRight, AlertCircle } from 'lu
 import { useRoute, useRouter } from '#imports';
 import { usePaymentStore } from '~/stores/payment.store';
 import { storeToRefs } from 'pinia';
+import { PaymentMethod } from '~/types/payment';
 
 definePageMeta({
   layout: 'process'
@@ -154,8 +155,9 @@ const processPayment = async (success: boolean) => {
     
     try {
         await paymentStore.processPayment({
+			concertId,
             bookingId,
-            paymentMethod: 'CREDIT_CARD',
+            paymentMethod: PaymentMethod.CARD,
             amount
         }, queueToken);
         navigateTo('/booking/complete');
