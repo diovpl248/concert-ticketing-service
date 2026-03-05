@@ -13,6 +13,12 @@ spring:
     redis:
       host: localhost
       port: 16379
+  datasource:
+    url: jdbc:mysql://localhost:13306/ticket?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+    username: user
+    password: password
+  jpa:
+    show-sql: true
 
 logging:
   level:

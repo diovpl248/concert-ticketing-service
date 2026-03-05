@@ -2,12 +2,23 @@ server:
   port: 18080
 
 spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
   application:
     name: ticket-queue-api
   data:
     redis:
       host: localhost
       port: 16379
+  datasource:
+    url: jdbc:mysql://localhost:13306/ticket?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+    username: user
+    password: password
+  jpa:
+    show-sql: true
 
 logging:
   level:
