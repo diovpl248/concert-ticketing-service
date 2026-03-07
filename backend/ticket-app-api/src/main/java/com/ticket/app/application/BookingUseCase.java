@@ -1,11 +1,15 @@
 package com.ticket.app.application;
 
+import com.ticket.app.dto.booking.BookingDetailResponse;
 import com.ticket.app.dto.booking.BookingRequest;
 import com.ticket.app.dto.booking.BookingResponse;
 import com.ticket.core.common.exception.BusinessException;
 import com.ticket.core.common.exception.ErrorCode;
 import com.ticket.core.domain.booking.entity.Booking;
+import com.ticket.core.domain.booking.entity.BookingStatus;
 import com.ticket.core.domain.booking.service.BookingService;
+import com.ticket.core.domain.payment.entity.Payment;
+import com.ticket.core.domain.payment.repository.PaymentRepository;
 import com.ticket.core.domain.queue.repository.QueueRedisRepository;
 import com.ticket.core.domain.seat.entity.Seat;
 import com.ticket.core.domain.seat.service.SeatService;
@@ -22,6 +26,7 @@ public class BookingUseCase {
     private final BookingService bookingService;
     private final QueueRedisRepository queueRedisRepository;
     private final UserRepository userRepository; // 사용자 정보 조회를 위한 선택적 의존성
+    private final PaymentRepository paymentRepository;
 
     public BookingResponse createBooking(BookingRequest request, String queueToken, Long userId) {
         // 1. 대기열 토큰 검증
@@ -48,5 +53,22 @@ public class BookingUseCase {
         Booking booking = bookingService.createBooking(user, seat);
 
         return BookingResponse.from(booking);
+    }
+
+    public BookingDetailResponse getBookingDetail(Long bookingId, Long userId) {
+        Payment payment = paymentRepository.findByBookingId(bookingId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOOKING_NOT_FOUND));
+
+        Booking booking = payment.getBooking();
+
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_BOOKING);
+        }
+
+        if (booking.getStatus() != BookingStatus.PAID) {
+            throw new BusinessException(ErrorCode.BOOKING_NOT_FOUND);
+        }
+        
+        return BookingDetailResponse.of(booking, payment);
     }
 }
