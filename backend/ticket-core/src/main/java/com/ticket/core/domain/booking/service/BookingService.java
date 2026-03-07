@@ -63,6 +63,16 @@ public class BookingService {
         return booking;
     }
 
+    public Booking getBookingForUser(Long bookingId, Long userId) {
+        Booking booking = getBooking(bookingId);
+        
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_BOOKING);
+        }
+        
+        return booking;
+    }
+
     @Transactional
     public void completeBooking(Booking booking) {
         booking.markAsPaid();

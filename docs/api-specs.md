@@ -151,3 +151,40 @@
     "issuedAt": "2024-10-24T10:02:00Z"
   }
   ```
+
+---
+
+## 6. 예약 단건 조회 API - Flow Step 6
+
+### 6.1. 예약 상세 정보 조회
+- **GET** `/api/bookings/{bookingId}`
+- **Header**: `Authorization: Bearer {jwt_token}`
+- **Description**: 특정 예약의 상세 정보를 조회합니다. 본인의 예약이 아닌 경우 권한 없음 오류를 반환합니다.
+- **Response**:
+  ```json
+  {
+    "bookingId": 5001,
+    "concert": {
+      "id": 1,
+      "title": "네온 나이츠 월드 투어 2024",
+      "venue": "서울 잠실 올림픽 주경기장",
+      "thumbnailUrl": "https://...",
+      "date": "2024-10-24",
+      "time": "19:00"
+    },
+    "seat": {
+      "id": 1, 
+      "section": "VIP", 
+      "row": "A", 
+      "col": "1", 
+      "price": 150000 
+    },
+    "payment": {
+      "paymentId": 9001,
+      "amount": 150000,
+      "paymentMethod": "CARD",
+      "status": "PAID",
+      "issuedAt": "2024-10-24T10:02:00Z"
+    }
+  }
+  ```
