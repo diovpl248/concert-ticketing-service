@@ -96,7 +96,7 @@ import { useRoute, useRouter } from '#imports';
 import { useConcertStore } from '~/stores/concert.store';
 import { useBookingStore } from '~/stores/booking.store';
 import { storeToRefs } from 'pinia';
-import type { SeatResponse } from '~/types/concert';
+import { SeatStatus, type SeatResponse } from '~/types/concert';
 
 definePageMeta({
   layout: 'process'
@@ -110,7 +110,7 @@ const bookingStore = useBookingStore();
 const { currentSeats: seats } = storeToRefs(concertStore);
 const { isBooking } = storeToRefs(bookingStore);
 
-const selectedSeat = ref<any | null>(null);
+const selectedSeat = ref<SeatResponse | null>(null);
 
 const concertId = Number(route.query.concertId) || Number(route.params.id);
 const dateId = Number(route.query.dateId);
@@ -140,13 +140,13 @@ const isSelected = (seat: any) => {
 }
 
 const getSeatClass = (seat: any) => {
-    if (seat.status !== 'AVAILABLE') return 'bg-gray-300 cursor-not-allowed';
+    if (seat.status !== SeatStatus.AVAILABLE) return 'bg-gray-300 cursor-not-allowed';
     if (isSelected(seat)) return 'bg-blue-400 text-white ring-2 ring-blue-100';
     return 'bg-gray-200 hover:bg-gray-300 text-transparent hover:text-gray-500';
 }
 
 const toggleSeat = (seat: any) => {
-    if (seat.status !== 'AVAILABLE') return;
+    if (seat.status !== SeatStatus.AVAILABLE) return;
     
     if (isSelected(seat)) {
         selectedSeat.value = null;
