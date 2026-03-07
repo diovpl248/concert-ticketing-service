@@ -6,6 +6,7 @@ import com.ticket.app.dto.booking.BookingResponse;
 import com.ticket.core.common.exception.BusinessException;
 import com.ticket.core.common.exception.ErrorCode;
 import com.ticket.core.domain.booking.entity.Booking;
+import com.ticket.core.domain.booking.entity.BookingStatus;
 import com.ticket.core.domain.booking.service.BookingService;
 import com.ticket.core.domain.payment.entity.Payment;
 import com.ticket.core.domain.payment.repository.PaymentRepository;
@@ -55,12 +56,17 @@ public class BookingUseCase {
     }
 
     public BookingDetailResponse getBookingDetail(Long bookingId, Long userId) {
-        Booking booking = bookingService.getBookingForUser(bookingId, userId);
-        
-        // 결제 정보 조회 (결제가 아직 안 된 HELD 상태일 수도 있으므로 Optional 처리)
-        Payment payment = null;
-        if (booking.getStatus() == com.ticket.core.domain.booking.entity.BookingStatus.PAID) {
-            payment = paymentRepository.findByBookingId(bookingId).orElse(null);
+        Payment payment = paymentRepository.findByBookingId(bookingId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOOKING_NOT_FOUND));
+
+        Booking booking = payment.getBooking();
+
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_BOOKING);
+        }
+
+        if (booking.getStatus() != BookingStatus.PAID) {
+            throw new BusinessException(ErrorCode.BOOKING_NOT_FOUND);
         }
         
         return BookingDetailResponse.of(booking, payment);
