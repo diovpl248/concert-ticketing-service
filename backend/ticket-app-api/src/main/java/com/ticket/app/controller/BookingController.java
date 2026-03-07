@@ -1,10 +1,13 @@
 package com.ticket.app.controller;
 
 import com.ticket.app.application.BookingUseCase;
+import com.ticket.app.dto.booking.BookingDetailResponse;
 import com.ticket.app.dto.booking.BookingRequest;
 import com.ticket.app.dto.booking.BookingResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -26,6 +29,14 @@ public class BookingController {
         // 임시로 userId 1L을 사용합니다. 실제로는 인증 토큰에서 추출해야 합니다.
         Long userId = 1L; 
         BookingResponse response = bookingUseCase.createBooking(request, queueToken, userId);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingDetailResponse> getBookingDetail(
+            @PathVariable Long bookingId) {
+        // 임시로 userId 1L을 사용합니다. 실제로는 인증 토큰에서 추출해야 합니다.
+        Long userId = 1L; 
+        BookingDetailResponse response = bookingUseCase.getBookingDetail(bookingId, userId);
         return ResponseEntity.ok(response);
     }
 }
