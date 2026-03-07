@@ -16,3 +16,35 @@ export interface BookingResponse {
   status: BookingStatus;
   expiresAt: string;
 }
+
+export interface ConcertInfo {
+  id: number;
+  title: string;
+  venue: string;
+  thumbnailUrl: string;
+  date: string;
+  time: string;
+}
+
+export interface SeatInfo {
+  id: number;
+  section: string;
+  row: string;
+  col: string;
+  price: number;
+}
+
+export interface PaymentInfo {
+  paymentId: number;
+  amount: number;
+  paymentMethod: string;
+  status: string;
+  issuedAt: string;
+}
+
+export interface BookingDetailResponse {
+  bookingId: number;
+  concert: ConcertInfo;
+  seat: SeatInfo;
+  payment: PaymentInfo;
+}

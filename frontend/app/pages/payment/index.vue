@@ -160,7 +160,7 @@ const processPayment = async (success: boolean) => {
             paymentMethod: PaymentMethod.CARD,
             amount
         }, queueToken);
-        navigateTo('/booking/complete');
+        navigateTo({ path: '/booking/complete', query: { bookingId } });
     } catch(e) {
         alert('결제 처리 중 에러가 발생했습니다.');
         console.error('Payment failed', e);
