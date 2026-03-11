@@ -20,7 +20,7 @@ public class QueueTokenUseCase {
     private final QueueRedisRepository queueRedisRepository;
 
     // 최대 활성 사용자 수 (예: 1000명)
-    private static final long MAX_ACTIVE_USERS = 1L;
+    private static final long MAX_ACTIVE_USERS = 1000L;
 
     /**
      * 토큰 발급 및 대기열/활성열 진입
@@ -33,8 +33,8 @@ public class QueueTokenUseCase {
         Long activeCount = queueRedisRepository.getActiveQueueSize(concertId);
 
         if (activeCount < MAX_ACTIVE_USERS) {
-            // 활성열 여유가 있으면 바로 활성 상태로 진입
-            queueRedisRepository.addActiveQueue(concertId, token);
+            // 활성열 여유가 있으면 바로 활성 상태로 진입 (5분 만료)
+            queueRedisRepository.addActiveQueue(concertId, token, 300L);
             return new QueueTokenResponse(token, QueueStatus.ACTIVE, 0L, 0L);
         } else {
             // 여유가 없으면 대기열로 진입 (현재 시간을 score로 사용)

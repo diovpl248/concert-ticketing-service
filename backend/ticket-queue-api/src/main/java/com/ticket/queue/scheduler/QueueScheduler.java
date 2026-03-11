@@ -34,7 +34,8 @@ public class QueueScheduler {
             Set<String> tokensToActivate = queueRedisRepository.popMinWaitQueue(DEFAULT_CONCERT_ID, countToActivate);
 
             if (!tokensToActivate.isEmpty()) {
-                queueRedisRepository.addActiveQueue(DEFAULT_CONCERT_ID, tokensToActivate);
+                // 활성열 진입 시 5분 만료시간(TTL) 부여
+                queueRedisRepository.addActiveQueue(DEFAULT_CONCERT_ID, tokensToActivate, 300L);
                 log.info("Activated {} tokens for Concert ID {}", tokensToActivate.size(), DEFAULT_CONCERT_ID);
             }
         }
