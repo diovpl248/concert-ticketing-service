@@ -29,14 +29,20 @@ public interface QueueRedisRepository {
     // ------------------------------------------------------------------------
     
     /**
-     * 활성열에 토큰을 추가합니다.
+     * 활성열에 토큰을 추가합니다. (TTL 적용)
+     * @param concertId 콘서트 ID
+     * @param token 토큰 값
+     * @param ttlSeconds 만료 시간(초)
      */
-    void addActiveQueue(Long concertId, String token);
+    void addActiveQueue(Long concertId, String token, long ttlSeconds);
     
     /**
-     * 활성열에 여러 토큰을 한 번에 추가합니다.
+     * 활성열에 여러 토큰을 한 번에 추가합니다. (TTL 적용)
+     * @param concertId 콘서트 ID
+     * @param tokens 토큰 목록
+     * @param ttlSeconds 만료 시간(초)
      */
-    void addActiveQueue(Long concertId, Set<String> tokens);
+    void addActiveQueue(Long concertId, Set<String> tokens, long ttlSeconds);
     
     /**
      * 유효한 활성 토큰인지 확인합니다.

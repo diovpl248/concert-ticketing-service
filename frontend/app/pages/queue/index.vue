@@ -3,9 +3,13 @@
     <AppHeader title="대기 상태" :showBack="true" backPath="/" />
 
     <main class="flex-1 px-6 pt-6 pb-10 flex flex-col items-center max-w-md mx-auto w-full">
-      <div class="w-full mb-6 text-center">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2 tracking-tight">네온 나이츠 월드 투어 2024</h2>
-        <p class="text-gray-500 text-sm font-medium">10월 24일 • 서울 잠실 올림픽 주경기장</p>
+      <div class="w-full mb-6 text-center" v-if="concert">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2 tracking-tight">{{ concert.title }}</h2>
+        <p class="text-gray-500 text-sm font-medium">{{ concertDateLabel }} • {{ concert.venue }}</p>
+      </div>
+      <div class="w-full mb-6 text-center" v-else>
+        <div class="h-7 bg-gray-100 rounded w-2/3 mx-auto mb-2 animate-pulse"></div>
+        <div class="h-4 bg-gray-100 rounded w-1/2 mx-auto animate-pulse"></div>
       </div>
 
       <div class="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-100 p-8 w-full mb-6 text-center relative overflow-hidden">
@@ -21,10 +25,6 @@
         <div class="text-[64px] font-bold text-gray-900 tracking-tighter leading-none mb-2 tabular-nums">{{ formattedPosition }}</div>
         <p class="text-gray-500 text-sm mb-8 font-medium">명 남았습니다</p>
         
-        <div class="w-full bg-gray-100 rounded-full h-1.5 mb-5 overflow-hidden">
-          <div class="bg-indigo-500 h-1.5 rounded-full transition-all duration-1000 ease-linear" :style="{ width: progress + '%' }"></div>
-        </div>
-        
         <div class="flex justify-between items-center text-sm">
           <span class="text-gray-500 font-medium">예상 대기 시간</span>
           <span class="font-bold text-gray-900">약 {{ estimatedMinutes }}분</span>
@@ -39,26 +39,17 @@
             페이지를 새로고침하거나 브라우저를 닫으면 대기 순서가 초기화될 수 있습니다.
           </div>
         </div>
-		<p class="text-center text-[11px] font-mono text-gray-300 mt-4 tracking-wide uppercase">Queue ID: Q-8829-XJ29</p>
+		<p v-if="token" class="text-center text-[11px] font-mono text-gray-300 mt-4 tracking-wide uppercase">Queue Token: {{ token }}</p>
       </div>
     </main>
-
-    <!-- <div class="sticky bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-100 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
-      <div class="max-w-md mx-auto">
-        <button class="w-full bg-gray-50 text-gray-400 font-semibold py-4 rounded-xl text-[15px] cursor-not-allowed flex items-center justify-center gap-2.5 transition-all" disabled>
-          <component :is="Lock" class="w-[18px] h-[18px]" />
-          좌석 선택 페이지 진입 중...
-        </button>
-        
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ChevronLeft, Hourglass, Info, Bell, Lock } from 'lucide-vue-next';
+import { Hourglass, Info } from 'lucide-vue-next';
 import { useRoute, useRouter } from '#imports';
 import { useQueueStore } from '~/stores/queue.store';
+import { useConcertStore } from '~/stores/concert.store';
 import { storeToRefs } from 'pinia';
 import { QueueStatus } from '~/types/queue';
 
@@ -69,23 +60,38 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const queueStore = useQueueStore();
-const { position, estimatedMinutes, status, token } = storeToRefs(queueStore);
+const concertStore = useConcertStore();
 
-const progress = ref(20);
+const { position, estimatedMinutes, status, token } = storeToRefs(queueStore);
+const { currentConcert: concert } = storeToRefs(concertStore);
+
 const formattedPosition = computed(() => position.value.toLocaleString());
 
-const goBack = () => {
-  navigateTo('/');
-}
+const concertDateLabel = computed(() => {
+  if (!concert.value?.dates?.length) return '';
+  const dateId = Number(route.query.dateId);
+  const matchedDate = concert.value.dates.find(d => d.id === dateId);
+  const target = matchedDate || concert.value.dates[0];
+  return new Date(target.datetime).toLocaleString('ko-KR', {
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+});
 
 onMounted(async () => {
   const concertId = Number(route.query.concertId);
   const dateId = Number(route.query.dateId);
   if (!concertId) return navigateTo('/');
 
+  // 공연 정보 로드
+  concertStore.fetchConcertDetail(concertId);
+
   try {
     await queueStore.enterQueue(concertId);
     
+    // 토큰이 이미 활성 상태면 대기열 건너뛰기
     if (status.value === QueueStatus.ACTIVE) {
       return navigateTo(`/concerts/${concertId}/seats?dateId=${dateId}&queueToken=${token.value}`);
     }
@@ -103,7 +109,6 @@ onMounted(async () => {
     
     try {
       await queueStore.pollStatus(concertId);
-      progress.value = Math.min(100, progress.value + 5);
 
       isActive = status.value === QueueStatus.ACTIVE;
       if (isActive) {
