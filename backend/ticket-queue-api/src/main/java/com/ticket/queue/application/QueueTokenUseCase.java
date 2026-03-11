@@ -19,8 +19,7 @@ public class QueueTokenUseCase {
 
     private final QueueRedisRepository queueRedisRepository;
 
-    // 최대 활성 사용자 수 (예: 1000명)
-    private static final long MAX_ACTIVE_USERS = 1000L;
+    private static final long MAX_ACTIVE_USERS = 100L;
 
     /**
      * 토큰 발급 및 대기열/활성열 진입
