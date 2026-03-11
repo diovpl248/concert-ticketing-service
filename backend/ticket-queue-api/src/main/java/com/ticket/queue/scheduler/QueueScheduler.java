@@ -18,7 +18,7 @@ public class QueueScheduler {
     // TODO: 다건 공연 지원 시 DB 조회 등 동적 처리 필요. MVP용 기본 ID 할당
     private static final Long DEFAULT_CONCERT_ID = 1L;
     private static final long MAX_ACTIVE_USERS = 1000L;
-    private static final long BATCH_SIZE = 10L;
+    private static final long BATCH_SIZE = 1000L;
 
     /**
      * 주기적으로 대기열(WAITING)에서 가장 오래 대기한 사용자를 활성열(ACTIVE)로 전환
